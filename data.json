@@ -33,6 +33,29 @@
       "websiteId": 120,
       "createdAt": {},
       "updatedAt": {}
+    },
+    {
+      "id": 43,
+      "title": "",
+      "slug": "non-gamstop-casino",
+      "content": "",
+      "seoTitle": "",
+      "seoDescription": "",
+      "htmlHead": "",
+      "gptPrompt": "",
+      "heroTitle": "",
+      "heroSubtitle": "",
+      "heroImage": "",
+      "template": "review",
+      "isHomepage": false,
+      "order": 0,
+      "lang": "",
+      "faqTitle": "",
+      "sections": null,
+      "faq": [],
+      "websiteId": 120,
+      "createdAt": {},
+      "updatedAt": {}
     }
   ],
   "faq_schema": null,
@@ -85,8 +108,8 @@
     }
   ],
   "FAQ": null,
-  "_generated_at": "2026-08-25T13:50:16.357Z",
+  "_generated_at": "2026-08-26T15:21:32.779Z",
   "_version": "1.0.0",
-  "_last_deploy": "2026-08-25T13:50:16.974Z",
-  "_deploy_trigger": "4l026k"
+  "_last_deploy": "2026-08-26T15:21:33.330Z",
+  "_deploy_trigger": "q0jrq"
 }

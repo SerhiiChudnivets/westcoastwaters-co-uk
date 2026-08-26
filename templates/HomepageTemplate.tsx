@@ -15,17 +15,10 @@ interface Slot {
   link?: string
 }
 
-interface Bonus {
-  id?: number
-  Name?: string
-  logo?: MediaFile | MediaFile[] | string
-  link?: string
-}
-
 interface SubmenuItem {
   id?: number
   label: string
-  url?: string
+  url: string
   link?: string
   open_in_new_tab?: boolean
   openInNewTab?: boolean
@@ -34,11 +27,32 @@ interface SubmenuItem {
 interface MenuItem {
   id?: number
   label: string
-  url?: string
+  url: string
   link?: string
   open_in_new_tab?: boolean
   openInNewTab?: boolean
   submenu?: SubmenuItem[]
+}
+
+interface Bonus {
+  id?: number
+  Name?: string
+  logo?: MediaFile | MediaFile[] | string
+  link?: string
+}
+
+interface ReviewItem {
+  name?: string
+  logo?: string | MediaFile | MediaFile[]
+  bonus?: string
+  rating?: string
+  link?: string
+}
+
+interface FaqItem {
+  id?: number
+  question: string
+  answer: string
 }
 
 interface FooterImage {
@@ -48,9 +62,10 @@ interface FooterImage {
 }
 
 interface PageData {
-  title: string
-  slug: string
-  content?: string
+  title?: string
+  slug?: string
+  breadcrumbs?: boolean
+  home_name?: string
   seo_title?: string
   seoTitle?: string
   seo_description?: string
@@ -58,52 +73,49 @@ interface PageData {
   html_head?: string
   htmlHead?: string
   htmlhead?: string
-  breadcrumbs?: boolean
-  home_name?: string
-  hero_title?: string
-  heroTitle?: string
-  hero_subtitle?: string
-  heroSubtitle?: string
-  hero_badge?: string
-  heroImage?: string | MediaFile | MediaFile[] | null
-  hero_image?: string | MediaFile | MediaFile[] | null
-  cta_text?: string
-  cta_link?: string
-  faq_title?: string
-  faqTitle?: string
-  faq?: { id?: number; question: string; answer: string }[]
-  FAQ?: { id?: number; question: string; answer: string }[]
-  sections?: any[]
-  template?: string
   [key: string]: any
 }
 
-interface SiteData {
+interface CasinoData {
+  // Базові поля
   name: string
+  html_head?: string
+  htmlHead?: string
+  htmlhead?: string
+  seoTitle?: string
+  seo_title?: string
+  seoDescription?: string
+  seo_description?: string
   url: string
+  template?: string
+  language_code: string
+  allow_indexing: boolean
+  redirect_404s_to_homepage: boolean
+  use_www_version: boolean
+  breadcrumbs?: boolean
+  home_name?: string
+  
+  // Уніфіковані поля шаблонів
   site_name?: string
-  accent_color?: string
-  footer_text?: string
-  allow_indexing?: boolean
-  logo?: any
-  login_text?: string
-  register_text?: string
-  redirect_link?: string
-  pages?: PageData[]
-  header_menu?: MenuItem[]
-  footer_menu?: MenuItem[]
   hero_title?: string
   hero_subtitle?: string
   hero_badge?: string
   cta_text?: string
+  logo?: { url: string; name?: string } | null
+  accent_color?: string
   tagline?: string
   features_list?: string
+  footer_text?: string
   popup_text?: string
-  faq_title?: string
-  faqTitle?: string
+  faq_title?:string
+  login_text?: string
+  register_text?: string
   slots_title?: string
   bonus_title?: string
   get_bonus_btn_text?: string
+  redirect_link?: string
+  
+  // Колірні теми
   main_background?: string
   secondary_background?: string
   button_background?: string
@@ -111,37 +123,41 @@ interface SiteData {
   text_color?: string
   color_highlight_text?: string
   color_main_btn_text?: string
+  
+  // Rich text content
+  content?: string
+  
+  // Repeatable components
   Slots?: Slot[]
   Bonuses?: Bonus[]
-  main_background_img?: any
-  popup_logo?: any
+  Reviews?: ReviewItem[]
+  header_menu?: MenuItem[]
+  footer_menu?: MenuItem[]
   footer_images?: FooterImage[]
   footerImages?: FooterImage[]
-  faq_schema?: boolean
-  breadcrumbs?: boolean
-  home_name?: string
-  html_head?: string
-  htmlHead?: string
-  htmlhead?: string
-  seo_title?: string
-  seoTitle?: string
-  seo_description?: string
-  seoDescription?: string
-  content?: string
-  heroTitle?: string
-  heroSubtitle?: string
-  heroImage?: string | MediaFile | MediaFile[] | null
-  hero_image?: string | MediaFile | MediaFile[] | null
-  cta_background?: string
+  pages?: PageData[]
+  
+  // Metadata
+  _generated_at?: string
+  _version?: string
+  
+  // Allow any other fields
   [key: string]: any
 }
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
   
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
   
-  html, body { width: 100%; }
+  html, body {
+  
+  width: 100%;
+}
 
   body {
     font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -150,23 +166,64 @@ const styles = `
     line-height: 1.6;
   }
 
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
 
+  /* Header Styles */
   header {
-    position: sticky; top: 0; z-index: 50;
-    background: var(--secondary); backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--secondary);
+    border-bottom: 1px solid color-mix(in srgb, var(--secondary) 78%, #000);
   }
 
   .header-content {
-    display: flex; align-items: center; justify-content: space-between; padding: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+    gap: 24px;
   }
   
-  .logo { display: flex; align-items: center; gap: 0.5rem; }
-  .logo-image { width: 100%; height: 45px; }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--foreground);
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
 
-  .logo-text { font-size: 1.5rem; font-weight: 700; color: var(--button-bg); }
+  .logo span {
+    color: var(--primary);
+  }
 
-  .header-buttons { display: flex; gap: 0.75rem; }
+  .logo-image{
+    max-width: 180px;
+    height: 45px;
+    object-fit: contain;
+    display: block;
+  }
+  .logo-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--button-bg);
+  }
+
+  .logo-text {
+    color: var(--foreground);
+  }
+
+  .header-buttons {
+    display: flex;
+    gap: 0.75rem;
+  }
 
   .burger-button,
   .nav-close {
@@ -183,56 +240,128 @@ const styles = `
   }
 
   .btn {
-    padding: 0.5rem 1.5rem; font-weight: 600; border-radius: calc(var(--radius) * 1);
-    cursor: pointer; transition: all 0.3s; border: none; font-size: 0.95rem;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    border-radius: calc(var(--radius) * 1);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    font-size: 0.95rem;
   }
 
   .btn-outline {
-    background: transparent; border: 1px solid var(--primary); color: var(--primary);
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
   }
-  .btn-outline:hover { background: var(--primary); color: var(--primary-foreground); }
 
-  .btn-primary { background: var(--button-bg); color: var(--primary-foreground); }
-  .btn-primary:hover { opacity: 0.9; }
+  .btn-outline:hover {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
 
-  .btn-lg { padding: 1rem 2rem; font-size: 1.125rem; }
+  .btn-primary {
+    background: var(--button-bg);
+    color: var(--primary-foreground);
+  }
 
-  .nav-content li { list-style-type: none; }
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+  }
+
+  /* Navigation Styles */
+  .nav-content li{
+    list-style-type: none;
+  }
 
   .nav-content {
-    display: flex; align-items: center; justify-content: center; gap: 2rem;
-    overflow-x: auto; color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-left: auto;
+    overflow-x: visible;
+    color: var(--primary);
   }
 
-  .menu-item { position: relative; }
+  .menu-item {
+    position: relative;
+  }
 
   .nav-link {
-    color: var(--muted-foreground); text-decoration: none; font-weight: 500;
-    white-space: nowrap; transition: color 0.3s; display: flex; align-items: center; gap: 0.25rem;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
-  .nav-link:hover { color: var(--primary); }
 
-  .menu-arrow { font-size: 10px; transition: transform 0.3s; }
-  .menu-item:hover .menu-arrow { transform: rotate(180deg); }
+  .nav-link:hover {
+    color: var(--foreground);
+  }
+
+  .menu-arrow {
+    font-size: 10px;
+    transition: transform 0.3s;
+  }
+
+  .menu-item:hover .menu-arrow {
+    transform: rotate(180deg);
+  }
 
   .submenu {
-    position: absolute; top: 100%; left: 0; background: var(--secondary);
-    border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0;
-    min-width: 200px; z-index: 1000; opacity: 0; visibility: hidden;
-    transform: translateY(-10px); transition: all 0.3s ease;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    min-width: 200px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }
 
-  .menu-item:hover .submenu { opacity: 1; visibility: visible; transform: translateY(0); }
+  .menu-item:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
 
   .submenu a {
-    display: block; color: var(--muted-foreground); text-decoration: none;
-    padding: 0.5rem 1rem; transition: all 0.3s; white-space: nowrap;
+    display: block;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s;
+    white-space: nowrap;
   }
-  .submenu a:hover { background: var(--accent); color: var(--primary); }
 
-  footer .nav-content { padding: 1rem 0; font-size: 0.875rem; }
-  footer .nav-link { font-size: 0.875rem; }
+  .submenu a:hover {
+    background: var(--accent);
+    color: var(--primary);
+  }
+
+  footer .nav-content {
+    padding: 1rem 0;
+    font-size: 0.875rem;
+  }
+
+  footer .nav-link {
+    font-size: 0.875rem;
+  }
 
   .breadcrumbs-section {
     background: var(--background);
@@ -264,131 +393,284 @@ const styles = `
     color: var(--foreground);
   }
 
+
+  /* Hero Banner Styles */
   .hero-section {
-    position: relative; width: 100%; height: auto; overflow: hidden;
-    padding: 5rem; background-size: cover; background-position: center center;
-  }
-
-  .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .hero-overlay { position: absolute; inset: 0; }
-  .header__gradient {
-    position: absolute; background: linear-gradient(180deg, rgba(25, 25, 25, 0.00) 0%, #191919 100%);
-    height: 30px; width: 100%; bottom: -1px; left: 0; z-index: 1;
-  }
-
-  .hero-background {
-    background: #00000070; padding: 1.5rem; border-radius: 1rem; margin-bottom: 1rem;
+    background: color-mix(in srgb, var(--secondary) 82%, #000);
+    color: var(--foreground);
+    padding: 52px 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--secondary) 72%, #000);
+    box-shadow: inset 0 -60px 60px -60px rgba(0, 0, 0, 0.25);
   }
 
   .hero-content {
-    position: relative; height: 100%; display: flex; flex-direction: column;
-    justify-content: center; max-width: 40rem;
-  }
-
-  .hero-badge {
-    display: inline-block; background: color-mix(in srgb, var(--primary) 40%, transparent);
-    color: var(--muted-foreground); padding: 0.25rem 1rem; border-radius: 9999px;
-    font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; width: fit-content;
+    position: relative;
+    max-width: 660px;
   }
 
   .hero-title {
-    font-size: 3.5rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; line-height: 1.1;
+    font-size: 34px;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    max-width: 660px;
+    font-weight: 800;
   }
 
-  .hero-subtitle { font-size: 1.25rem; color: var(--primary); margin-bottom: 0.5rem; }
-  .hero-description { color: var(--muted-foreground); margin-bottom: 2rem; }
-
-  .btn-hero { background: var(--cta-bg); box-shadow: 0 0 30px hsla(var(--button-bg), 0.4); }
-  .bonus-popup .color-main-btn { background: var(--cta-bg); }
-  .color-main-btn { color: var(--color-main-btn); box-shadow: 0 0 10px var(--primary); }
-
-  .slots-section { padding: 4rem 0; background: var(--background); }
-
-  .slot-background {
-    background: #00000070; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; padding: 1rem; gap: 1rem; border-radius: 1rem;
+  .hero-title em,
+  .hero-accent {
+    color: var(--primary);
+    font-style: normal;
   }
 
-  .section-title {
-    text-align: center; font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 2rem;
+  .hero-description {
+    color: var(--muted-foreground);
+    max-width: 600px;
+    font-size: 17px;
   }
 
-  .slider-container { position: relative; }
-
-  .slider-btn {
-    position: absolute; top: 50%; transform: translateY(-50%); z-index: 10;
-    background: var(--card); border: 1px solid var(--border); border-radius: 50%;
-    padding: 0.5rem; cursor: pointer; transition: all 0.3s;
-  }
-  .slider-btn:hover { background: var(--secondary); }
-  .slider-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-  .slider-btn-left { left: -1rem; }
-  .slider-btn-right { right: -1rem; }
-
-  .slots-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; padding: 0 2rem;
+  .hero-facts {
+    display: flex;
+    gap: 10px 26px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    font-size: 14.5px;
+    color: var(--foreground);
   }
 
-  .slot-card {
-    position: relative; border-radius: 0.75rem; overflow: hidden; cursor: pointer; transition: transform 0.3s;
-  }
-  .slot-card:hover { transform: scale(1.05); }
-  .slot-image { width: 100%; aspect-ratio: 1; object-fit: cover; }
-
-  .slot-overlay {
-    position: absolute; inset: 0; background: hsla(var(--background), 0.8);
-    opacity: 0; transition: opacity 0.3s; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 0.75rem;
-  }
-  .slot-card:hover .slot-overlay { opacity: 1; }
-  .slot-name { color: var(--primary); font-weight: 700; font-size: 1.125rem; }
-
-  .bonuses-section { padding: 4rem 0; background: var(--secondary); }
-  .bonuses-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; padding: 0 2rem;
+  .hero-facts span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
-  .bonus-card {
-    display: flex; flex-direction: column; height: 100%; border-radius: 0.75rem; overflow: hidden;
-    border: 1px solid var(--border); transition: all 0.3s; background: var(--background);
-  }
-  .bonus-card img { max-width: 100%; max-height: 80px; object-fit: cover; }
-  .bonus-card:hover { border-color: var(--primary); box-shadow: 0 0 20px hsla(var(--primary), 0.2); }
-
-  .bonus-header {
-    height: 6rem; display: flex; align-items: center; justify-content: center; background: #00000070;
+  .hero-facts span::before {
+    content: "✓";
+    color: var(--primary);
+    font-weight: 800;
   }
 
-  .bonus-icon { width: 3rem; height: 3rem; color: white; }
-
-  .bonus-content {
-    padding: 1rem; display: flex; flex-direction: column; flex: 1; text-align: center;
-    background: var(--background); border-radius: 0 0 0.75rem 0.75rem;
+  .color-main-btn{
+     color: var(--color-main-btn);
+     box-shadow: 0 0 10px var(--primary);
   }
 
-  .bonus-name { color: var(--primary); font-weight: 700; font-size: 1.125rem; margin-bottom: 0.25rem; }
-  .bonus-content .btn { margin-top: auto; border-radius: 0.5rem; }
+  /* Reviews Section */
+  .reviews-section {
+    padding: 4rem 0;
+    background: var(--background);
+  }
 
-  .content-section { padding: 2rem 0; background: var(--background); }
+  .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .review-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .review-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+  }
+
+  .review-card-index {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--primary);
+    width: 38px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .review-card-logo {
+    width: 64px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: color-mix(in srgb, var(--primary) 18%, var(--background));
+    flex-shrink: 0;
+  }
+
+  .review-card-logo-placeholder {
+    width: 64px;
+    height: 50px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--primary) 18%, var(--background));
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .review-card-info {
+    flex: 1;
+    min-width: 130px;
+  }
+
+  .review-card-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--foreground);
+  }
+
+  .review-card-bonus {
+    flex: 1.2;
+    min-width: 150px;
+    background: color-mix(in srgb, var(--primary) 18%, var(--background));
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .review-card-score {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .review-stars {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .star {
+    font-size: 1rem;
+  }
+
+  .star-full {
+    color: var(--primary);
+  }
+
+  .star-half {
+    color: var(--primary);
+    opacity: 0.5;
+  }
+
+  .star-empty {
+    color: var(--border);
+  }
+
+  .review-rating-num {
+    display: none;
+  }
+
+  .review-card-action {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .review-card {
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      padding: 14px 16px;
+    }
+    .review-card-index {
+      order: 1;
+      font-size: 24px;
+      width: auto;
+    }
+    .review-card-logo,
+    .review-card-logo-placeholder {
+      order: 2;
+      width: 50px;
+      height: 42px;
+      font-size: 14px;
+    }
+    .review-card-info {
+      order: 3;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .review-card-score {
+      order: 4;
+      width: 42px;
+      height: 42px;
+      font-size: 15px;
+    }
+    .review-card-bonus {
+      order: 5;
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+    .review-card-action {
+      order: 6;
+      width: 100%;
+    }
+    .review-card-action .btn {
+      display: block;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  /* Custom Content Section */
+  .content-section {
+    padding: 2rem 0;
+    background: var(--background);
+  }
 
   .content-wrapper {
-    max-width: 56rem; margin: 0 auto; color: var(--foreground); line-height: 1.8; font-size: 1.125rem;
+    max-width: 56rem;
+    margin: 0 auto;
+    color: var(--foreground);
+    line-height: 1.8;
+    font-size: 1.125rem;
   }
 
   .content-wrapper h1, .content-wrapper h2, .content-wrapper h3, .content-wrapper h4 {
-    color: var(--primary); margin: 2rem 0 1rem; font-weight: 700; text-align: center;
+    color: var(--primary);
+    margin: 2rem 0 1rem;
+    font-weight: 700;
+    text-align: center;
   }
+
   .content-wrapper h1 { font-size: 2.5rem; }
   .content-wrapper h2 { font-size: 2rem; }
   .content-wrapper h3 { font-size: 1.5rem; }
 
   .content-wrapper p {
-    margin-bottom: 1.5rem; color: var(--muted-foreground); line-height: 1.75rem;
-    font-size: 1.125rem; font-weight: 200;
+    margin-bottom: 1.5rem;
+    color: var(--muted-foreground);
+    line-height: 1.75rem;
+    font-size: 1.125rem;
+    font-weight: 200;
   }
 
-  .content-wrapper a { color: var(--button-bg); text-decoration: underline; }
-  .content-wrapper a:hover { opacity: 0.8; }
+  .content-wrapper li p {
+    margin-bottom: 0;
+  }
+
+  .content-wrapper a {
+    color: var(--button-bg);
+    text-decoration: underline;
+  }
+
+  .content-wrapper a:hover {
+    opacity: 0.8;
+  }
 
   .content-wrapper img {
     display: block;
@@ -398,213 +680,394 @@ const styles = `
     border-radius: 0.5rem;
   }
 
-  .content-wrapper ul, .content-wrapper ol {
-    margin: 1.5rem 0; padding-left: 2rem; color: var(--muted-foreground);
+  .content-wrapper ul {
+    margin: 1.5rem 0;
+    padding-left: 2rem;
+    color: var(--muted-foreground);
   }
 
-  .content-wrapper table {
-    width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.5rem 0;
-    background: var(--background); border-radius: 10px; overflow: hidden;
+  .content-wrapper ol {
+    counter-reset: content-step;
+    list-style: none;
+    max-width: 720px;
+    margin: 1.5rem 0;
+    padding-left: 0;
+    color: var(--muted-foreground);
   }
-  .content-wrapper thead th {
-    background: var(--secondary); color: var(--primary); text-align: left;
-    font-weight: 700; font-size: 1rem; line-height: 1.4; padding: 1rem;
+
+  .content-wrapper ol li {
+    counter-increment: content-step;
+    position: relative;
+    padding: 12px 0 12px 46px;
+    border-bottom: 1px solid var(--border);
   }
-  .content-wrapper tbody td {
-    color: var(--muted-foreground); font-size: 1.05rem; line-height: 1.45;
-    padding: 0.95rem 1rem; vertical-align: top; transition: background-color 0.2s ease;
+
+  .content-wrapper ol li:last-child {
+    border-bottom: none;
   }
-  .content-wrapper thead tr { border-bottom: 1px solid var(--border); }
-  .content-wrapper tbody tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
-  .content-wrapper tbody tr:hover td {
-    background: var(--secondary); box-shadow: inset 0 0 0 9999px rgba(255, 255, 255, 0.06);
+
+  .content-wrapper ol li::before {
+    content: counter(content-step);
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--primary) 18%, var(--background));
+    color: var(--primary);
+    font-weight: 800;
+    display: grid;
+    place-items: center;
+  }
+
+  .content-wrapper ol li strong,
+  .content-wrapper ol li b {
+    display: block;
     color: var(--foreground);
   }
 
-  .content-wrapper li { margin-bottom: 0.5rem; }
+  .content-wrapper .table-scroll {
+    width: 100%;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .content-wrapper table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    background: var(--background);
+    overflow: hidden;
+  }
+
+  .content-wrapper thead th {
+    background: var(--secondary);
+    color: var(--primary);
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.4px;
+    line-height: 1.4;
+    padding: 13px 16px;
+  }
+
+  .content-wrapper tbody td {
+    color: var(--muted-foreground);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    padding: 13px 16px;
+    vertical-align: top;
+  }
+
+  .content-wrapper th,
+  .content-wrapper td {
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  .content-wrapper th:last-child,
+  .content-wrapper td:last-child {
+    border-right: none;
+  }
+
+  .content-wrapper tr:last-child td {
+    border-bottom: none;
+  }
+
+  .content-wrapper td b,
+  .content-wrapper td strong {
+    color: var(--foreground);
+  }
+
+ 
+
+  .content-wrapper li {
+    margin-bottom: 0.5rem;
+  }
 
   .content-wrapper blockquote {
-    border-left: 4px solid var(--primary); padding-left: 1.5rem;
-    margin: 1.5rem 0; font-style: italic; color: var(--muted-foreground);
+    border-left: 4px solid var(--primary);
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--muted-foreground);
   }
-
-  .faq-section { padding: 0 0 4rem 0; background: var(--background); }
-  .faq-section .content-wrapper { line-height: unset; }
-  .faq-title { font-size: 2rem; font-weight: 700; color: var(--primary); text-align: center; }
-  .faq-list { display: flex; flex-direction: column; gap: 1.5rem; }
-
+  .faq-section {
+    padding: 0 0 4rem 0;
+    background: var(--background);
+  }
+  .faq-section .content-wrapper{
+    line-height: unset;
+  } 
+  
+  .faq-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-align: center;
+  }
+  
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
   .faq-item {
-    background: var(--card); border-radius: 1.75rem; padding: 1rem; cursor: pointer;
-    box-shadow: 0 0 5px var(--primary); transition: all 0.3s ease;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
   }
-
+  
   .faq-question {
-    font-size: 1.125rem; font-weight: 700; color: var(--primary);
-    display: flex; justify-content: space-between; align-items: center;
-    cursor: pointer; transition: background 0.3s ease;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--foreground);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 18px;
+    cursor: pointer;
+    transition: color 0.2s ease;
   }
-  .faq-question:hover { background-color: var(--secondary); }
-
+  
+  .faq-question:hover {
+    color: var(--primary);
+  }
+  
   .faq-answer {
-    padding: 0; color: var(--muted-foreground); line-height: 1.6;
-    height: 0; overflow: hidden; opacity: 0;
-    transition: height 0.3s ease-out, opacity 0.3s ease-out; max-height: 1000px;
+    padding: 0 18px;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    font-size: 0.9rem;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: height 0.2s ease-out, opacity 0.2s ease-out;
+    max-height: 1000px; 
   }
-  .faq-answer.open { height: auto; opacity: 1; }
+  
+  .faq-answer.open {
+    height: auto;
+    opacity: 1;
+    padding-bottom: 16px;
+  }
+  
+  .faq-toggle-icon {
+    display: flex;
+    margin-left: 1rem;
+    color: var(--primary);
+    font-weight: 800;
+    transition: transform 0.2s ease;
+  }
+  
+  
+  
+  .faq-toggle-icon.open {
+    transform: rotate(90deg); 
+  }
 
-  .faq-toggle-icon { display: flex; margin-left: 1rem; transition: transform 0.3s ease; }
-  .faq-toggle-icon svg { transition: transform 0.3s ease; }
-  .faq-toggle-icon.open { transform: rotate(180deg); }
 
+  /* Footer */
   footer {
-    background: var(--secondary); border-top: 1px solid var(--border); padding: 2rem 0 7rem 0;
+    background: var(--secondary);
+    border-top: 1px solid color-mix(in srgb, var(--secondary) 78%, #000);
+    padding: 34px 0 22px;
+    margin-top: 20px;
   }
 
-  .footer-content { display: flex; flex-direction: column; gap: 1.5rem; }
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+  }
 
   .footer-top {
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
   }
 
-  .footer-certifications { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-  .cert-item { display: flex; align-items: center; gap: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; }
-
-  .footer-certification-link { display: flex; align-items: center; line-height: 0; transition: opacity 0.2s ease; }
-  .footer-certification-link:hover { opacity: 0.8; }
-  .footer-certification-image { display: block; max-width: 160px; max-height: 42px; object-fit: contain; }
-
-  .age-badge {
-    display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem;
-    border-radius: 50%; border: 2px solid hsl(0 84% 60%); color: hsl(0 84% 60%);
-    font-weight: 700; font-size: 0.875rem;
+  .footer-links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
   }
-
-  .footer-links { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
 
   .footer-link {
-    color: var(--muted-foreground); text-decoration: none; font-size: 0.875rem; transition: color 0.3s;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.3s;
   }
-  .footer-link:hover { color: var(--primary); }
 
-  .footer-menu-item { position: relative; list-style-type: none; }
+  .footer-link:hover {
+    color: var(--foreground);
+  }
+  
+  .footer-menu-item {
+    position: relative;
+    list-style-type: none;
+  }
 
   .footer-submenu {
-    position: absolute; top: 100%; left: 0; background: var(--secondary);
-    border-radius: 8px; padding: 0.5rem 0; min-width: 160px; z-index: 1000;
-    opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--secondary);
+    
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    min-width: 160px;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }
-  .footer-menu-item:hover .footer-submenu { opacity: 1; visibility: visible; transform: translateY(0); }
+
+  .footer-menu-item:hover .footer-submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
 
   .footer-submenu a {
-    display: block; color: var(--muted-foreground); text-decoration: none;
-    padding: 0.5rem 1rem; transition: all 0.3s; white-space: nowrap;
-  }
-  .footer-submenu a:hover { background: var(--accent); color: var(--primary); }
-
-  .footer-bottom { padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; }
-  .footer-copyright { color: var(--muted-foreground); font-size: 0.875rem; }
-
-  .bonus-popup {
-    position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-    background: var(--card); border-top: 1px solid hsla(var(--primary), 0.3);
-    box-shadow: 0 -2px 15px var(--primary); animation: slideUp 0.3s ease-out;
-  }
-  .bonus-popup.hidden { display: none; }
-
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    display: block;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s;
+    white-space: nowrap;
   }
 
-  .popup-content {
-    display: flex; align-items: center; justify-content: space-between; padding: 1rem; gap: 1rem;
+  .footer-submenu a:hover {
+    background: var(--accent);
+    color: var(--primary);
   }
 
-  .popup-text {
-    font-size: 1.125rem; font-weight: 700; color: var(--primary); flex: 1; text-align: center;
+  .footer-bottom {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent);
+    text-align: center;
   }
 
-  .popup-buttons { display: flex; align-items: center; gap: 0.5rem; }
-
-  .btn-close {
-    padding: 0.25rem; color: var(--muted-foreground); background: transparent;
-    border: none; cursor: pointer; transition: color 0.3s;
+  .footer-copyright {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
   }
-  .btn-close:hover { color: var(--foreground); }
 
+  /* Responsive */
   @media (max-width: 768px) {
-    html, body { overflow-x: hidden; }
+    html,
+    body {
+      overflow-x: hidden;
+    }
+
     header {
-      position: fixed; top: 0; left: 0; right: 0;
-      backdrop-filter: none; z-index: 6000;
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
-    header + * { margin-top: 150px; }
+
     .header-content {
-      position: relative; flex-direction: column; justify-content: center;
-      gap: 0.75rem; padding: 1rem 3.25rem 1rem;
+      height: auto;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 12px;
+      padding-bottom: 12px;
     }
-    .header-content .logo { justify-content: center; }
-    .header-buttons { justify-content: center; flex-wrap: wrap; order: 2; }
-    .burger-button {
-      display: flex; position: absolute; top: 1rem; right: 0; z-index: 1001;
-    }
-    .nav-bar {
-      position: fixed; top: 0; right: -100%; bottom: 0;
-      width: min(82vw, 320px); height: 100vh; min-height: 100dvh; max-height: 100dvh;
-      padding: 4.5rem 1.25rem 1.25rem;
-      background: color-mix(in srgb, var(--secondary) 92%, #000);
-      border-left: 1px solid var(--border);
-      box-shadow: -18px 0 40px rgba(0, 0, 0, 0.35);
-      transition: right 0.25s ease; z-index: 5000; isolation: isolate; overflow-y: auto;
-    }
-    .nav-bar::before {
-      content: ''; position: absolute; inset: 0;
-      background: color-mix(in srgb, var(--secondary) 92%, #000); z-index: -1;
-    }
-    .nav-bar.open { right: 0; }
-    .nav-close { display: flex; position: absolute; top: 1rem; right: 1rem; }
+
     .nav-content {
-      flex-direction: column; align-items: flex-start; justify-content: flex-start;
-      gap: 1rem; overflow: visible; position: relative; z-index: 1;
-      background: color-mix(in srgb, var(--secondary) 92%, #000);
+      margin-left: 0;
+      gap: 16px 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      overflow: visible;
+      position: relative;
+      z-index: 1;
     }
-    .menu-item { width: 100%; }
-    .nav-link { width: 100%; font-size: 1.05rem; }
+
+    .nav-link {
+      font-size: 15px;
+    }
+
     .submenu {
-      position: static; min-width: 0; margin-top: 0.5rem; padding: 0 0 0 1rem;
-      background: transparent; border: 0; border-radius: 0; box-shadow: none;
-      opacity: 1; visibility: visible; transform: none;
+      position: static;
+      min-width: 0;
+      margin-top: 0.5rem;
+      padding: 0 0 0 1rem;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
     }
-    .hero-title { font-size: 2.5rem; }
-    .hero-section { padding: 2rem; }
-    .slots-grid, .bonuses-grid { grid-template-columns: repeat(2, 1fr); }
-    .bonus-card { min-height: 220px; border-radius: 0.75rem; }
-    .popup-content { padding: 1rem 0; }
-    .popup-content .logo-image { height: 45px; }
-    .popup-text { font-size: 0.775rem; }
-    .popup-content .btn { font-size: 0.75rem; }
-    .content-wrapper table { overflow-x: auto; white-space: nowrap; display: block; text-align: left; }
-    .header-buttons .btn { padding: 0.375rem 1rem; font-size: 0.875rem; }
-    .content-wrapper { font-size: 1rem; }
+
+    .hero-title {
+      font-size: 25px;
+    }
+
+    .hero-section {
+      padding: 38px 0;
+    }
+    .content-wrapper .table-scroll {
+      margin: 1.25rem 0;
+    }
+
+    .content-wrapper table {
+      min-width: 620px;
+      text-align: left;
+    }
+
+    .header-buttons .btn {
+      padding: 0.375rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .content-wrapper {
+      font-size: 1rem;
+    }
+
     .content-wrapper img {
-      float: none !important; margin: 1.25rem auto !important;
-      max-width: 100%; height: auto;
+      float: none !important;
+      margin: 1.25rem auto !important;
+      max-width: 100%;
+      height: auto;
     }
-    .faq-list, .section-title { width: 100%; }
-    .faq-section .container { flex-direction: column; }
+
+    .faq-list, .section-title{
+      width: 100%;
+    }
+    .faq-section .container{
+      flex-direction: column;
+    }
   }
-`
-
-export default function HomepageTemplate({ page, site }: { page: PageData; site: SiteData }) {
-  const data: SiteData = require('../data.json')
-  const [slotStartIndex, setSlotStartIndex] = useState(0)
-  const [bonusStartIndex, setBonusStartIndex] = useState(0)
-  const [showPopup, setShowPopup] = useState(false)
-  const [isPopupDismissed, setIsPopupDismissed] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
-
+`;
+export default function HomepageTemplate({ page, site }: { page: PageData; site: CasinoData }) {
+  const data: CasinoData = require('../data.json')
+  const normalizeSeoSlug = (slug?: string) => (slug || '').replace(/^\/|\/$/g, '')
+  const pageSlug = normalizeSeoSlug(page?.slug)
+  const sourcePage = Array.isArray(data.pages)
+    ? data.pages.find((item) => normalizeSeoSlug(item.slug) === pageSlug)
+    : undefined
+  const seoPage = sourcePage || page || {}
+  const pickString = (...values: any[]) => values.find((value) => typeof value === 'string' && value.trim())?.trim() || ''
   const getHtmlHeadContent = () => {
     const pageSlug = page.slug?.replace(/^\/|\/$/g, '')
     const sourcePage = Array.isArray(data.pages)
@@ -621,14 +1084,15 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
   const extractMetaDescription = (html: string): string => {
     if (!html) return ''
     const descriptionMatch =
-      html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/i) ||
-      html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["'][^>]*>/i)
+        html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/i) ||
+        html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["'][^>]*>/i)
     return descriptionMatch?.[1]?.trim() || ''
   }
-  const pageSeoDescription = page.seoDescription || page.seo_description || site.seoDescription || site.seo_description || ''
-  const pageSeoTitle = page.seoTitle || page.seo_title || site.seoTitle || site.seo_title || ''
+  const pageSeoDescription = pickString(seoPage.seoDescription, seoPage.seo_description, data.seoDescription, data.seo_description)
+  const pageSeoTitle = pickString(seoPage.seoTitle, seoPage.seo_title, data.seoTitle, data.seo_title)
   const metaDescription = pageSeoDescription || extractMetaDescription(htmlHeadContent)
 
+  // Функція для парсингу htmlHeadContent
   const renderHeadTags = (html: string) => {
     const normalizeAttributeName = (name: string) => {
       if (name === 'charset') return 'charSet'
@@ -682,62 +1146,75 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
 
       if (tagName === 'script') {
         tags.push(
-          <script
-            key={key}
-            {...attrs}
-            dangerouslySetInnerHTML={{ __html: match[2] || '' }}
-          />
+            <script
+                key={key}
+                {...attrs}
+                dangerouslySetInnerHTML={{ __html: match[2] || '' }}
+            />
         )
       }
     }
 
     return tags
+  };
+  // Отримуємо кольори з data або використовуємо дефолтні
+  const mainBackground = data.main_background || '#1a202c' // default dark blue
+  const secondaryBackground = data.secondary_background || '#2d3748' // default darker blue
+  const buttonBackground = data.button_background || '#f59e0b' // default amber
+  const ctaBackground = data.cta_background || buttonBackground
+  const buttonText = data.button_text || '#1a202c' // default dark
+  const textColor = data.text_color || '#f7fafc' // default light
+  const colorHighlightText = data.color_highlight_text || '#f59e0b'
+  const colorMainBtnText = data.color_main_btn_text || 'fff'
+
+
+  // Функція для заміни змінних у content
+  const replaceVariables = (content: string): string => {
+    if (!content) return content
+
+    let result = content
+    const variableRegex = /\{\{([^}]+)\}\}/g
+
+    result = result.replace(variableRegex, (match, variableName) => {
+      const trimmedName = variableName.trim()
+      if (data[trimmedName] !== undefined && data[trimmedName] !== null) {
+        return String(data[trimmedName])
+      }
+      return match
+    })
+
+    result = result.replace(/<table(\s|>)/gi, '<div class="table-scroll"><table$1')
+    result = result.replace(/<\/table>/gi, '</table></div>')
+
+    return result
   }
 
-  const mainBackground = page.main_background || site.main_background || '#1a202c'
-  const secondaryBackground = page.secondary_background || site.secondary_background || '#2d3748'
-  const buttonBackground = page.button_background || site.button_background || '#f59e0b'
-  const ctaBackground = page.cta_background || site.cta_background || buttonBackground
-  const buttonText = page.button_text || site.button_text || '#1a202c'
-  const textColor = page.text_color || site.text_color || '#f7fafc'
-  const colorHighlightText = page.color_highlight_text || site.color_highlight_text || '#f59e0b'
-  const colorMainBtnText = page.color_main_btn_text || site.color_main_btn_text || 'fff'
+  const processedContent = data.content ? replaceVariables(data.content) : ''
 
-  const siteName = site.site_name || site.name || 'LuckySpin'
-  const heroTitle = page.heroTitle || page.hero_title || site.heroTitle || site.hero_title || 'Get 200% Bonus'
-  const heroSubtitle = page.heroSubtitle || page.hero_subtitle || site.heroSubtitle || site.hero_subtitle || 'Up to \u20AC1,000 + 100 Free Spins'
-  const heroBadge = page.hero_badge || site.hero_badge || 'Welcome Bonus'
-  const ctaText = page.cta_text || site.cta_text || 'Play Now'
-  const popupText = page.popup_text || site.popup_text || 'Welcome Bonus: 100% up to $500 + 200 Free Spins!'
-
+  const siteName = data.site_name || data.name || 'LuckySpin'
+  const heroTitle = data.hero_title || 'Get 200% Bonus'
+  // New variable
   const normalizeUrl = (url?: string) => {
     if (!url) return '#'
     if (/^https?:\/\//i.test(url)) return url
     return `https://${url}`
   }
-
-  const urlSite = site.url || '/'
-  const year = new Date().getFullYear()
-  const faqTitle = page.faqTitle || page.faq_title || site.faqTitle || site.faq_title
-  const pageFaqs = Array.isArray(page.faq) ? page.faq : Array.isArray(page.FAQ) ? page.FAQ : []
-  const siteFaqs = Array.isArray(site.faq) ? site.faq : Array.isArray(site.FAQ) ? site.FAQ : []
-  const faqs = pageFaqs.length > 0 ? pageFaqs : siteFaqs
-  const loginText = page.login_text || site.login_text
-  const registerText = page.register_text || site.register_text
-  const slotsTitle = page.slots_title || site.slots_title
-  const bonusTitle = page.bonus_title || site.bonus_title
-  const getBonusBtn = page.get_bonus_btn_text || site.get_bonus_btn_text || 'Get Bonus'
-  const redirectLink = page.redirect_link || site.redirect_link || ''
-  const headerMenu = Array.isArray(page.header_menu) && page.header_menu.length > 0 ? page.header_menu : site.header_menu || []
-  const footerMenu = Array.isArray(page.footer_menu) && page.footer_menu.length > 0 ? page.footer_menu : site.footer_menu || []
-  const showBreadcrumbs = page.breadcrumbs === true || site.breadcrumbs === true
-  const homeBreadcrumbName = page.home_name || site.home_name || 'Home'
+  const urlSite = data.url || '/'
+  const year = new Date().getFullYear();
+  const faqTitle = data.faq_title
+  const faqs = Array.isArray(data.FAQ) ? data.FAQ : []
+  const loginText = data.login_text
+  const registerText = data.register_text
+  const getBonusBtn = data.get_bonus_btn_text || 'Get Bonus'
+  const redirectLink = data.redirect_link || ''
+  const showBreadcrumbs = page?.breadcrumbs === true || data.breadcrumbs === true
+  const homeBreadcrumbName = page?.home_name || data.home_name || 'Home'
   const formatBreadcrumbTitle = () => {
-    const fallback = page.slug
+    const fallback = page?.slug
       ? page.slug.replace(/^\/|\/$/g, '').replace(/[-_]+/g, ' ')
-      : page.hero_title || siteName
-    let title = page.title || page.hero_title || fallback
-    const namesToRemove = [site.site_name, site.name, site.url]
+      : page?.hero_title || siteName
+    let title = page?.title || page?.hero_title || fallback
+    const namesToRemove = [data.site_name, data.name, data.url]
       .filter(Boolean)
       .map((name) => String(name).replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, ''))
 
@@ -749,35 +1226,9 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
   }
   const currentPageTitle = formatBreadcrumbTitle()
 
-  const replaceVariables = (content: string): string => {
-    if (!content) return content
-    let result = content
-    const variableRegex = /\{\{([^}]+)\}\}/g
-    result = result.replace(variableRegex, (match, variableName) => {
-      const trimmedName = variableName.trim()
-      const pageValue = page[trimmedName]
-      const siteValue = site[trimmedName]
 
-      if (pageValue !== undefined && pageValue !== null) {
-        return String(pageValue)
-      }
-      if (siteValue !== undefined && siteValue !== null) {
-        return String(siteValue)
-      }
-      return match
-    })
-    return result
-  }
 
-  const processedContent = page.content ? replaceVariables(page.content) : site.content ? replaceVariables(site.content) : ''
-
-  const pageSlots = Array.isArray(page.Slots) ? page.Slots : []
-  const siteSlots = Array.isArray(site.Slots) ? site.Slots : []
-  const slots = pageSlots.length > 0 ? pageSlots : siteSlots
-  const pageBonuses = Array.isArray(page.Bonuses) ? page.Bonuses : []
-  const siteBonuses = Array.isArray(site.Bonuses) ? site.Bonuses : []
-  const bonuses = pageBonuses.length > 0 ? pageBonuses : siteBonuses
-
+  // Генеруємо динамічні стилі з кольорами
   const dynamicStyles = `
     :root {
       --background: ${mainBackground};
@@ -787,30 +1238,50 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
       --primary-foreground: ${buttonText};
       --secondary: ${secondaryBackground};
       --muted: ${mainBackground};
-      --muted-foreground: ${textColor}cc;
-      --border: ${colorHighlightText}33;
+      --muted-foreground: ${textColor}cc; /* with opacity */
+      --border: ${colorHighlightText}33; /* with opacity */
       --radius: 0.5rem;
       --button-bg: ${buttonBackground};
       --cta-bg: ${ctaBackground};
       --button-text: ${buttonText};
       --color-main-btn: ${colorMainBtnText};
     }
-  `
+  `;
 
-  const visibleSlots = 5
-  const visibleBonuses = 5
+  const reviews: ReviewItem[] = Array.isArray(data.Reviews) ? data.Reviews : []
 
-  const handleSlotPrev = () => setSlotStartIndex((prev) => Math.max(0, prev - 1))
-  const handleSlotNext = () => setSlotStartIndex((prev) => Math.min(slots.length - visibleSlots, prev + 1))
-  const handleBonusPrev = () => setBonusStartIndex((prev) => Math.max(0, prev - 1))
-  const handleBonusNext = () => setBonusStartIndex((prev) => Math.min(bonuses.length - visibleBonuses, prev + 1))
-
-  const getLogoUrl = (slot: Slot) => {
-    if (!slot.logo) return ''
-    if (typeof slot.logo === 'string') return slot.logo
-    if (Array.isArray(slot.logo) && slot.logo.length > 0) return slot.logo[0].url || ''
-    if (typeof slot.logo === 'object' && 'url' in slot.logo) return slot.logo.url || ''
+  const getReviewLogoUrl = (logo?: string | MediaFile | MediaFile[]): string => {
+    if (!logo) return ''
+    if (typeof logo === 'string') return logo
+    if (Array.isArray(logo) && logo.length > 0) return logo[0].url || ''
+    if (typeof logo === 'object' && 'url' in logo) return (logo as MediaFile).url || ''
     return ''
+  }
+
+  const renderStars = (rating: string) => {
+    const num = parseFloat(rating)
+    if (isNaN(num)) return null
+    const full = Math.floor(num)
+    const hasHalf = num - full >= 0.3
+    const empty = 5 - full - (hasHalf ? 1 : 0)
+    return (
+      <div className="review-stars">
+        {Array.from({ length: full }).map((_, i) => (
+          <span key={`f${i}`} className="star star-full">★</span>
+        ))}
+        {hasHalf && <span className="star star-half">★</span>}
+        {Array.from({ length: empty }).map((_, i) => (
+          <span key={`e${i}`} className="star star-empty">★</span>
+        ))}
+        <span className="review-rating-num">{num.toFixed(1)}</span>
+      </div>
+    )
+  }
+
+  const formatReviewRating = (rating?: string) => {
+    if (!rating) return ''
+    const num = parseFloat(rating)
+    return isNaN(num) ? rating : num.toFixed(1)
   }
 
   const getMediaUrl = (media?: MediaFile | MediaFile[] | string) => {
@@ -820,136 +1291,105 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
     if (typeof media === 'object' && 'url' in media) return media.url || ''
     return ''
   }
-
-  const footerImagesSource = Array.isArray(page.footer_images) && page.footer_images.length > 0
-    ? page.footer_images
-    : Array.isArray(page.footerImages) && page.footerImages.length > 0
-      ? page.footerImages
-      : Array.isArray(site.footer_images) && site.footer_images.length > 0
-        ? site.footer_images
-        : site.footerImages || []
-  const footerImages = footerImagesSource
-    .map((item) => ({ ...item, imageUrl: getMediaUrl(item.image || undefined) }))
-    .filter((item) => item.imageUrl)
-
-  const backgroundImage = getMediaUrl(page.heroImage || page.hero_image || site.heroImage || site.hero_image || site.main_background_img)
+  const logoUrl = getMediaUrl(data.logo)
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!isPopupDismissed && window.scrollY > window.innerHeight * 0.5) setShowPopup(true)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [isPopupDismissed])
-
-  useEffect(() => {
-    if (site.faq_schema && faqs.length > 0 && typeof document !== 'undefined') {
+    if (data.faq_schema && typeof document !== 'undefined') {
       const faqSchema = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": faqs.map(({ question, answer }) => ({
-          "@type": "Question", "name": question,
+          "@type": "Question",
+          "name": question,
           "acceptedAnswer": { "@type": "Answer", "text": answer }
         }))
-      }
-      const script = document.createElement("script")
-      script.type = "application/ld+json"
-      script.text = JSON.stringify(faqSchema)
-      document.head.appendChild(script)
-      return () => { document.head.removeChild(script) }
+      };
+
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.text = JSON.stringify(faqSchema);
+      document.head.appendChild(script);
+
+
+      return () => {
+        document.head.removeChild(script);
+      };
     }
-  }, [faqs, site.faq_schema])
+  }, [faqs, data.faq_schema]);
+
 
   return (
     <>
       <Head>
-        <title>{pageSeoTitle || page.title || site.site_name || site.name}</title>
+        <title>{pageSeoTitle || data.site_name || data.name}</title>
         {metaDescription && <meta name="description" content={metaDescription} />}
-        <meta name="robots" content={site.allow_indexing ? 'index,follow' : 'noindex,nofollow'} />
+        <meta
+            name="robots"
+            content={data.allow_indexing ? 'index,follow' : 'noindex,nofollow'}
+        />
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Вставка всіх тегів з html_head */}
         {htmlHeadContent && renderHeadTags(htmlHeadContent)}
       </Head>
+
+
       <style dangerouslySetInnerHTML={{ __html: dynamicStyles }} />
       <style dangerouslySetInnerHTML={{ __html: styles }} />
 
       <div>
+        {/* Header */}
         <header>
           <div className="container">
             <div className="header-content">
-              <div className="logo">
-                <a href={normalizeUrl(urlSite)}>
-                  <img src={getMediaUrl(site.logo)} alt={siteName} className="logo-image"/>
-                </a>
-              </div>
-              <nav className={`nav-bar ${isMobileMenuOpen ? 'open' : ''}`}>
-                <button
-                  type="button"
-                  className="nav-close"
-                  aria-label="Close menu"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-                <ul className="nav-content">
-                  {headerMenu.length > 0 ? (
-                    headerMenu.map((item, index) => (
-                      <li key={item.id || index} className="menu-item">
-                        <a
-                          href={item.link && item.link.trim() ? item.link : redirectLink}
-                          className="nav-link"
-                        >
-                          {item.label}
-                          {item.submenu && item.submenu.length > 0 && <span className="menu-arrow">{'\u25BC'}</span>}
-                        </a>
-                        {item.submenu && item.submenu.length > 0 && (
-                          <div className="submenu">
-                            {item.submenu.map((subitem, subindex) => (
-                              <a
-                                key={subitem.id || subindex}
-                                href={subitem.link && subitem.link.trim() ? subitem.link : redirectLink}
-                              >
-                                {subitem.label}
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                      </li>
-                    ))
-                  ) : (
+              <a href={normalizeUrl(urlSite)} className="logo">
+                {logoUrl ? (
+                    <img src={logoUrl} alt={siteName} className="logo-image"/>
+                ) : (
                     <>
-                      <li><a href="#home" className="nav-link">Home</a></li>
-                      <li><a href="#slots" className="nav-link">Slots</a></li>
-                      <li><a href="#bonuses" className="nav-link">Bonuses</a></li>
+                      {siteName}<span>.</span>
                     </>
+                )}
+              </a>
+              <nav>
+                <ul className="nav-content">
+                  {data.header_menu && data.header_menu.length > 0 ? (
+                      data.header_menu.map((item, index) => (
+                          <li key={item.id || index} className="menu-item">
+                            <a
+                                href={item.link && item.link.trim() ? item.link : redirectLink}
+                                className="nav-link"
+                            >
+                              {item.label}
+                              {item.submenu && item.submenu.length > 0 && (
+                                  <span className="menu-arrow">▼</span>
+                              )}
+                            </a>
+                            {item.submenu && item.submenu.length > 0 && (
+                                <div className="submenu">
+                                  {item.submenu.map((subitem, subindex) => (
+                                      <a
+                                          key={subitem.id || subindex}
+                                          href={subitem.link && subitem.link.trim() ? subitem.link : redirectLink}
+                                      >
+                                        {subitem.label}
+                                      </a>
+                                  ))}
+                                </div>
+                            )}
+                          </li>
+                      ))
+                  ) : (
+                      <>
+                        <li><a href="#reviews" className="nav-link">Casinos</a></li>
+                        <li><a href="#compare" className="nav-link">Table</a></li>
+                        <li><a href="#how" className="nav-link">How to Start</a></li>
+                        <li><a href="#faq" className="nav-link">FAQ</a></li>
+                      </>
                   )}
                 </ul>
               </nav>
-              <div className="header-buttons">
-                {loginText && (
-                  <button className="btn btn-outline" onClick={() => { window.location.href = redirectLink || '/' }}>
-                    {loginText}
-                  </button>
-                )}
-                {registerText && (
-                  <button className="btn btn-primary" onClick={() => { window.location.href = redirectLink || '/' }}>
-                    {registerText}
-                  </button>
-                )}
-              </div>
-              <button
-                type="button"
-                className="burger-button"
-                aria-label="Open menu"
-                aria-expanded={isMobileMenuOpen}
-                onClick={() => setIsMobileMenuOpen(true)}
-              >
-                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
             </div>
           </div>
         </header>
@@ -966,130 +1406,70 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
           </section>
         )}
 
-        <section
-          id="home"
-          className="hero-section"
-          style={{
-            backgroundImage: backgroundImage
-              ? `url(${backgroundImage})`
-              : `linear-gradient(135deg, var(--secondary) 0%, var(--background) 100%)`,
-          }}
-        >
-          <div className="header__gradient"></div>
-          <div className="hero-bg"></div>
-          <div className="hero-overlay"></div>
+
+
+
+        {/* Hero Banner */}
+        <section id="home" className="hero-section">
           <div className="container">
             <div className="hero-content">
-              <span className="hero-badge">{heroBadge}</span>
-              <div className="hero-background">
-                <h1 className="hero-title">
-                  <span className="hero-accent">{heroTitle}</span>
-                </h1>
-                <p className="hero-subtitle">{heroSubtitle}</p>
-                <p className="hero-description">
-                  {page.tagline || site.tagline || 'Start your winning journey today with the best welcome offer in online gaming!'}
-                </p>
+              <h1 className="hero-title">
+                <span className="hero-accent">{heroTitle}</span>
+              </h1>
+              <p className="hero-description">
+                {data.tagline || 'Start your winning journey today with the best welcome offer in online gaming!'}
+              </p>
+              <div className="hero-facts">
+                <span>Only licensed sites</span>
+                <span>Payouts from 10 minutes</span>
+                <span>Updated weekly</span>
               </div>
-              <button
-                className="btn btn-primary btn-lg btn-hero color-main-btn"
-                onClick={() => { window.location.href = redirectLink || '/' }}
-              >
-                {ctaText}
-              </button>
             </div>
           </div>
         </section>
 
-        {slots.length > 0 && (
-          <section id="slots" className="slots-section">
-            <div className="container">
-              {slotsTitle && <h2 className="section-title">{slotsTitle}</h2>}
-              <div className="slider-container">
-                <button onClick={handleSlotPrev} disabled={slotStartIndex === 0} className="slider-btn slider-btn-left">
-                  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <div className="slots-grid">
-                  {slots.slice(slotStartIndex, slotStartIndex + visibleSlots).map((slot, index) => {
-                    const logoUrl = getLogoUrl(slot)
+        {/* Reviews Section */}
+        {reviews.length > 0 && (
+            <section id="reviews" className="reviews-section">
+              <div className="container">
+                <h2 className="section-title">Casino Reviews</h2>
+                <div className="reviews-list">
+                  {reviews.map((review, index) => {
+                    const logoUrl = getReviewLogoUrl(review.logo)
+                    const ratingText = formatReviewRating(review.rating)
                     return (
-                      <div key={slot.id || index} className="slot-card">
+                      <div key={index} className="review-card">
+                        <div className="review-card-index">{index + 1}</div>
                         {logoUrl ? (
-                          <img src={logoUrl} alt={slot.Name || `Slot ${index + 1}`} className="slot-image" />
+                          <img src={logoUrl} alt={review.name || `Casino ${index + 1}`} className="review-card-logo" />
                         ) : (
-                          <div className="slot-image" style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>
-                            {'\uD83C\uDFB0'}
-                          </div>
+                          <div className="review-card-logo-placeholder">🎰</div>
                         )}
-                        <div className="slot-overlay">
-                          <div className="slot-background">
-                            <span className="slot-name">{slot.Name || `Slot ${index + 1}`}</span>
-                            <button className="btn btn-primary" onClick={() => slot.link && (window.location.href = slot.link)}>Play</button>
-                          </div>
+                        <div className="review-card-info">
+                          <div className="review-card-name">{review.name || `Casino ${index + 1}`}</div>
+                          {review.rating && renderStars(review.rating)}
                         </div>
-                      </div>
-                    )
-                  })}
-                </div>
-                <button onClick={handleSlotNext} disabled={slotStartIndex >= slots.length - visibleSlots} className="slider-btn slider-btn-right">
-                  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {bonuses.length > 0 && (
-          <section id="bonuses" className="bonuses-section">
-            <div className="container">
-              {bonusTitle && <h2 className="section-title">{bonusTitle}</h2>}
-              <div className="slider-container">
-                <button onClick={handleBonusPrev} disabled={bonusStartIndex === 0} className="slider-btn slider-btn-left">
-                  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <div className="bonuses-grid">
-                  {bonuses.slice(bonusStartIndex, bonusStartIndex + visibleBonuses).map((bonus, index) => {
-                    const bonusLogo = getMediaUrl(bonus.logo)
-                    return (
-                      <div key={bonus.id || index} className="bonus-card">
-                        <div className="bonus-header">
-                          {bonusLogo ? (
-                            <img src={bonusLogo} alt={bonus.Name || `Bonus ${index + 1}`} />
-                          ) : (
-                            <svg className="bonus-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                            </svg>
+                        {review.bonus && <div className="review-card-bonus">{review.bonus}</div>}
+                        {ratingText && <div className="review-card-score">{ratingText}</div>}
+                        <div className="review-card-action">
+                          {review.link && (
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => window.location.href = review.link!}
+                            >
+                              {getBonusBtn}
+                            </button>
                           )}
                         </div>
-                        <div className="bonus-content">
-                          <h3 className="bonus-name">{bonus.Name || `Bonus ${index + 1}`}</h3>
-                          <button
-                            className="btn btn-primary"
-                            style={{ width: '100%', padding: '0.5rem' }}
-                            onClick={() => bonus.link && (window.location.href = bonus.link)}
-                          >
-                            {getBonusBtn}
-                          </button>
-                        </div>
                       </div>
                     )
                   })}
                 </div>
-                <button onClick={handleBonusNext} disabled={bonusStartIndex >= bonuses.length - visibleBonuses} className="slider-btn slider-btn-right">
-                  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
               </div>
-            </div>
-          </section>
+            </section>
         )}
 
+        {/* Custom Content Section */}
         {processedContent && (
           <section className="content-section">
             <div className="container">
@@ -1098,127 +1478,101 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
           </section>
         )}
 
+        {/* FAQ */}
         {faqs.length > 0 && (
-          <section id="faq" className="faq-section">
-            <div className="container">
-              <div className="content-wrapper">
-                <h2 className="faq-title">{faqTitle}</h2>
-                <div className="faq-list">
-                  {faqs.map((item, index) => {
-                    const isOpen = openFaqIndex === index
-                    return (
-                      <div key={item.id || index} className="faq-item">
-                        <div className="faq-question" onClick={() => setOpenFaqIndex(isOpen ? null : index)}>
-                          {item.question}
-                          <span className={`faq-toggle-icon ${isOpen ? 'open' : ''}`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="m6 9 6 6 6-6"></path>
-                            </svg>
-                          </span>
-                        </div>
-                        <div className={`faq-answer ${isOpen ? 'open' : ''}`}>{item.answer}</div>
-                      </div>
-                    )
-                  })}
+            <section id="faq" className="faq-section">
+              <div className="container">
+                <div className="content-wrapper">
+                  <h2 className="faq-title">{faqTitle}</h2>
+                  <div className="faq-list">
+                    {faqs.map((item, index) => {
+                      const [isOpen, setIsOpen] = useState(false);
+                      const toggleAnswer = () => {
+                        setIsOpen(!isOpen);
+                      };
+
+                      return (
+                          <div key={item.id || index} className="faq-item">
+                            <div className="faq-question" onClick={toggleAnswer}>
+                              {item.question}
+                              <span className={`faq-toggle-icon ${isOpen ? 'open' : ''}`}>
+                                ▸
+                              </span>
+                            </div>
+                            <div className={`faq-answer ${isOpen ? 'open' : ''}`}>{item.answer}</div>
+                          </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
         )}
 
+        {/* Footer */}
         <footer>
           <div className="container">
             <div className="footer-content">
               <div className="footer-top">
-                <div className="logo">
-                  <a href={normalizeUrl(urlSite)}>
-                    <img src={getMediaUrl(site.logo)} alt={siteName} className="logo-image"/>
-                  </a>
-                </div>
-                <div className="footer-certifications">
-                  {footerImages.length > 0 ? (
-                    footerImages.map((item, index) => (
-                      <a key={item.id || index} href={item.link || '#'} className="footer-certification-link" target="_blank" rel="nofollow">
-                        <img src={item.imageUrl} alt={`Footer certification ${index + 1}`} className="footer-certification-image" />
-                      </a>
-                    ))
+                <a href={normalizeUrl(urlSite)} className="logo">
+                  {logoUrl ? (
+                      <img src={logoUrl} alt={siteName} className="logo-image"/>
                   ) : (
-                    <>
-                      <div className="cert-item">
-                        <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                        <span>FairPlay</span>
-                      </div>
-                      <div className="age-badge">18+</div>
-                    </>
+                      <>
+                        {siteName}<span>.</span>
+                      </>
                   )}
-                </div>
-                <div className="footer-links">
-                  {footerMenu.length > 0 && (
-                    footerMenu.map((item, index) => (
-                      <div key={item.id || index} className="footer-menu-item">
-                        <a
-                          href={item.link && item.link.trim() ? item.link : redirectLink}
-                          className="footer-link"
-                        >
-                          {item.label}
-                        </a>
-                        {item.submenu && item.submenu.length > 0 && (
-                          <div className="footer-submenu">
-                            {item.submenu.map((subitem, subindex) => (
-                              <a
-                                key={subitem.id || subindex}
-                                href={subitem.link && subitem.link.trim() ? subitem.link : redirectLink}
-                              >
-                                {subitem.label}
-                              </a>
-                            ))}
+                </a>
+
+                <nav className="footer-links" aria-label="Footer navigation">
+                  {data.footer_menu && data.footer_menu.length > 0 ? (
+                      data.footer_menu.map((item, index) => (
+                          <div key={item.id || index} className="footer-menu-item">
+                            <a
+                                href={item.link && item.link.trim() ? item.link : redirectLink}
+                                className="footer-link"
+                            >
+                              {item.label}
+                            </a>
+                            {item.submenu && item.submenu.length > 0 && (
+                                <div className="footer-submenu">
+                                  {item.submenu.map((subitem, subindex) => (
+                                      <a
+                                          key={subitem.id || subindex}
+                                          href={subitem.link && subitem.link.trim() ? subitem.link : redirectLink}
+                                      >
+                                        {subitem.label}
+                                      </a>
+                                  ))}
+                                </div>
+                              )}
                           </div>
-                        )}
-                      </div>
-                    ))
+                      ))
+                  ) : (
+                      <>
+                        <a href="#reviews" className="footer-link">Casinos</a>
+                        <a href="#compare" className="footer-link">Table</a>
+                        <a href="#how" className="footer-link">How to Start</a>
+                        <a href="#faq" className="footer-link">FAQ</a>
+                      </>
                   )}
-                </div>
+                </nav>
               </div>
+
               <div className="footer-bottom">
                 <p className="footer-copyright">
-                  {site.footer_text || `\u00A9 ${year}. All rights reserved. ${siteName} Casino.`}
+                  {data.footer_text ||
+                      `© ${year}. All rights reserved. ${siteName} Casino.`}
                 </p>
               </div>
             </div>
           </div>
         </footer>
 
-        <div className={`bonus-popup ${showPopup ? '' : 'hidden'}`}>
-          <div className="container">
-            <div className="popup-content">
-              {getMediaUrl(page.popup_logo || site.popup_logo) && (
-                <div className="logo">
-                  <img src={getMediaUrl(page.popup_logo || site.popup_logo)} alt="Logo" className="logo-image" />
-                </div>
-              )}
-              <div className="popup-text">{popupText}</div>
-              <div className="popup-buttons">
-                <button className="btn btn-primary color-main-btn" onClick={() => { window.location.href = redirectLink || '/' }}>
-                  {getBonusBtn}
-                </button>
-                <button
-                  className="btn-close"
-                  onClick={() => {
-                    setShowPopup(false)
-                    setIsPopupDismissed(true)
-                  }}
-                >
-                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </>
   )
 }
+
+
+

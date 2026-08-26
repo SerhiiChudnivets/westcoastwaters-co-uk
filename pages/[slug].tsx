@@ -57,7 +57,10 @@ interface SiteData {
   login_text?: string
   register_text?: string
   redirect_link?: string
-  pages?: PageData[]
+  seo_title?: string
+  seoTitle?: string
+  seo_description?: string
+  seoDescription?: string
   header_menu?: any[]
   footer_menu?: any[]
   [key: string]: any
