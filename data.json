@@ -47,7 +47,7 @@
       "heroSubtitle": "",
       "heroImage": "",
       "template": "review",
-      "isHomepage": false,
+      "isHomepage": true,
       "order": 0,
       "lang": "",
       "faqTitle": "",
@@ -108,8 +108,8 @@
     }
   ],
   "FAQ": null,
-  "_generated_at": "2026-08-26T15:21:32.779Z",
+  "_generated_at": "2026-08-26T15:25:44.779Z",
   "_version": "1.0.0",
-  "_last_deploy": "2026-08-26T15:21:33.330Z",
-  "_deploy_trigger": "q0jrq"
+  "_last_deploy": "2026-08-26T15:25:45.326Z",
+  "_deploy_trigger": "zvfm"
 }
