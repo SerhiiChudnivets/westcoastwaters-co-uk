@@ -449,6 +449,13 @@ const styles = `
     font-weight: 800;
   }
 
+  .hero-updated {
+    margin-top: 18px;
+    color: var(--muted-foreground);
+    font-size: 16px;
+    font-style: italic;
+  }
+
   .color-main-btn{
      color: var(--color-main-btn);
      box-shadow: 0 0 10px var(--primary);
@@ -467,7 +474,8 @@ const styles = `
   }
 
   .review-card {
-    display: flex;
+    display: grid;
+    grid-template-columns: 38px 64px minmax(190px, 1fr) minmax(260px, 1.25fr) 52px 120px;
     align-items: center;
     gap: 16px;
     background: var(--card);
@@ -488,7 +496,6 @@ const styles = `
     color: var(--primary);
     width: 38px;
     text-align: center;
-    flex-shrink: 0;
   }
 
   .review-card-logo {
@@ -497,7 +504,6 @@ const styles = `
     border-radius: 8px;
     object-fit: contain;
     background: color-mix(in srgb, var(--primary) 18%, var(--background));
-    flex-shrink: 0;
   }
 
   .review-card-logo-placeholder {
@@ -511,12 +517,10 @@ const styles = `
     justify-content: center;
     font-size: 16px;
     font-weight: 800;
-    flex-shrink: 0;
   }
 
   .review-card-info {
-    flex: 1;
-    min-width: 130px;
+    min-width: 0;
   }
 
   .review-card-name {
@@ -526,14 +530,17 @@ const styles = `
   }
 
   .review-card-bonus {
-    flex: 1.2;
-    min-width: 150px;
+    min-width: 0;
     background: color-mix(in srgb, var(--primary) 18%, var(--background));
     border-radius: 8px;
     padding: 9px 14px;
     color: var(--primary);
     font-weight: 700;
     font-size: 15px;
+  }
+
+  .review-card-bonus:empty {
+    visibility: hidden;
   }
 
   .review-card-score {
@@ -547,7 +554,10 @@ const styles = `
     justify-content: center;
     font-weight: 800;
     font-size: 16px;
-    flex-shrink: 0;
+  }
+
+  .review-card-score:empty {
+    visibility: hidden;
   }
 
   .review-stars {
@@ -578,51 +588,64 @@ const styles = `
   }
 
   .review-card-action {
-    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  .review-card-action .btn {
+    width: 120px;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .review-card-action:empty {
+    visibility: hidden;
   }
 
   @media (max-width: 768px) {
     .review-card {
-      flex-wrap: wrap;
+      grid-template-columns: 32px 50px minmax(0, 1fr) 42px;
+      grid-template-areas:
+        "index logo info score"
+        "bonus bonus bonus bonus"
+        "action action action action";
       gap: 10px 14px;
       padding: 14px 16px;
     }
     .review-card-index {
-      order: 1;
+      grid-area: index;
       font-size: 24px;
       width: auto;
     }
     .review-card-logo,
     .review-card-logo-placeholder {
-      order: 2;
+      grid-area: logo;
       width: 50px;
       height: 42px;
       font-size: 14px;
     }
     .review-card-info {
-      order: 3;
-      flex: 1 1 auto;
+      grid-area: info;
       min-width: 0;
     }
     .review-card-score {
-      order: 4;
+      grid-area: score;
       width: 42px;
       height: 42px;
       font-size: 15px;
     }
     .review-card-bonus {
-      order: 5;
-      flex: 1 1 100%;
+      grid-area: bonus;
       min-width: 0;
     }
     .review-card-action {
-      order: 6;
+      grid-area: action;
       width: 100%;
     }
     .review-card-action .btn {
       display: block;
       text-align: center;
       width: 100%;
+      white-space: nowrap;
     }
   }
 
@@ -1201,6 +1224,17 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
   }
   const urlSite = data.url || '/'
   const year = new Date().getFullYear();
+  const formatLastDeployDate = (value?: string) => {
+    if (!value) return ''
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return ''
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    })
+  }
+  const lastDeployDate = formatLastDeployDate(data._last_deploy)
   const faqTitle = data.faq_title
   const faqs = Array.isArray(data.FAQ) ? data.FAQ : []
   const loginText = data.login_text
@@ -1383,8 +1417,7 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
                   ) : (
                       <>
                         <li><a href="#reviews" className="nav-link">Casinos</a></li>
-                        <li><a href="#compare" className="nav-link">Table</a></li>
-                        <li><a href="#how" className="nav-link">How to Start</a></li>
+
                         <li><a href="#faq" className="nav-link">FAQ</a></li>
                       </>
                   )}
@@ -1424,6 +1457,9 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
                 <span>Payouts from 10 minutes</span>
                 <span>Updated weekly</span>
               </div>
+              {lastDeployDate && (
+                <p className="hero-updated">Last updated on {lastDeployDate}</p>
+              )}
             </div>
           </div>
         </section>
@@ -1449,8 +1485,8 @@ export default function HomepageTemplate({ page, site }: { page: PageData; site:
                           <div className="review-card-name">{review.name || `Casino ${index + 1}`}</div>
                           {review.rating && renderStars(review.rating)}
                         </div>
-                        {review.bonus && <div className="review-card-bonus">{review.bonus}</div>}
-                        {ratingText && <div className="review-card-score">{ratingText}</div>}
+                        <div className="review-card-bonus">{review.bonus || ''}</div>
+                        <div className="review-card-score">{ratingText}</div>
                         <div className="review-card-action">
                           {review.link && (
                             <button
