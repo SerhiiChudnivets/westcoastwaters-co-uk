@@ -105,15 +105,106 @@
   "Reviews": [
     {
       "link": "https://playlink.ink/basswin",
-      "logo": "/uploads/891aecaf5440a74c2a69091e7930c10a.webp",
+      "logo": "/uploads/0bf2a360f50e1f070159c21cef70d4fc.webp",
       "name": "Bass Win Casino",
-      "bonus": "Welcome Bonus 100% up to £200 + 120 FS",
+      "bonus": "DEPOSIT TODAY – GET UP TO 3000€ 375% + 300 FS",
       "rating": "5"
+    },
+    {
+      "link": "https://playlink.ink/winstler",
+      "logo": "/uploads/a9717473c3b900e08f5b688accf45e10.webp",
+      "name": "Winstler Casino",
+      "bonus": "🍒 SLOTS WELCOME BONUS  600%  up to €9,500  20% CASHBACK",
+      "rating": "4.9"
+    },
+    {
+      "link": "https://playlink.ink/britsino",
+      "logo": "/uploads/9d044e86a1bc307e064d6b8c8ea22f53.webp",
+      "name": "Britsino Casino",
+      "bonus": "WELCOME PACKAGE  £2,000 + 700 FS + LOOTBOXES & SCRATCH CARDS",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/0aa9a7b31ef012e77108cd1a028eb8c6.webp",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/0b1a49735108d9dc0600e49e4b02133d.webp",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/747e336f892a3e847c90b220cc4de3eb.png",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/8412e9593eb893583d82e944bd7879ce.webp",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/535da6b5eae210ac2fc812e583b62f14.png",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/b25cca01b3bd531663b98f051fc1cb30.png",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/704e7ec23b364a865c1b462a6ec2665f.webp",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/6307b5656513fefd9421d5d9d6d1c4ba.webp",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/280ae7df292c2aaac23216baa487e5d7.png",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/0d5990cd96e5d2f157e4a16499b4ba1f.png",
+      "name": "",
+      "bonus": "",
+      "rating": ""
+    },
+    {
+      "link": "",
+      "logo": "/uploads/d2437415a6c9b37412d5f4a2fce9f75f.png",
+      "name": "",
+      "bonus": "",
+      "rating": ""
     }
   ],
   "FAQ": null,
-  "_generated_at": "2026-08-27T08:05:05.317Z",
+  "_generated_at": "2026-08-27T08:40:03.075Z",
   "_version": "1.0.0",
-  "_last_deploy": "2026-08-27T08:05:05.996Z",
-  "_deploy_trigger": "r389m6"
+  "_last_deploy": "2026-08-27T08:40:03.763Z",
+  "_deploy_trigger": "m8qgs"
 }
